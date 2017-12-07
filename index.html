@@ -118,13 +118,15 @@
                 console.log("keke" + y);
                 var dolarResult = multiplication(x, y);
                 var tryResult = multiplication(x, z);
-                $("#calcResult").text("Dolar: " + dolarResult + "\n TRY: " + tryResult);
+                var obj=$("#calcResult").text("Dolar: " + dolarResult + "\n TRY: " + tryResult);
+                obj.html(obj.html().replace(/\n/g,'<br/>'));
             }
             else if (radioVal == 'try') {
                 var x = $("#tryTextBox").val().replace(',', '.');
                 var y = $("#btcTurk").text().replace(',', '.');
                 var btcResult = division(x, y);
                 $("#calcResult").text("BTC: " + btcResult);
+                
             }
             else {
                 var x = $("#usdTextBox").val().replace(',', '.');
