@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: "Lucida Console";
+        }
+         
+        input {
+            background-color: lightslategray;
+            color: darkgreen;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container body-content">
+        <br />
+        <br />
+        <h2>Btc-TL Hesaplama</h2>
+
+        <p id="CoinMarketCapPrices">&nbsp;</p>
+        <p id="BtcTurkMarketPrices">&nbsp;</p>
+
+        <br />
+        <div id="radioGroups">
+            <form action="">
+                <input type="radio" name="currency" value="btc" id="radio1" checked> BTC
+                <input type="radio" name="currency" value="try" id="radio2"> TL
+                <input type="radio" name="currency" value="usd" id="radio3"> USD
+            </form>
+        </div>
+        <br />
+        <div id="calcForm">
+            <div class="row" id="coinTextDiv">
+                <div class="col-sm-3">
+                    <input type="text" name="coinText" id="coinTextBox" placeholder="0.00000000 BTC">
+                </div>
+                <div class="col-sm-9">
+                </div>
+            </div>
+
+            <div class="row" style="display: none;" id="tryTextDiv">
+                <div class="col-sm-3">
+                    <input type="text" name="tryText" id="tryTextBox" placeholder="0.00 TRY">
+                </div>
+                <div class="col-sm-9">
+                </div>
+            </div>
+
+            <div class="row" style="display: none;" id="usdTextDiv">
+                <div class="col-sm-3">
+                    <input type="text" name="usdText" id="usdTextBox" placeholder="0.00 USD">
+                </div>
+                <div class="col-sm-9">
+                </div>
+            </div>
+
+            <br />
+            <div class="row">
+                <div class="col-sm-2">
+                    <button type="button" id="btnCalc" class="btn-success btn-block">Hesapla</button>
+                </div>
+                <div class="col-sm-9">
+                </div>
+            </div>
+            <br />
+            <p id="calcResult">&nbsp;</p>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            coinMarket();
+            btcTurkMarket();
+        });
+
+        $('input[type=radio][name=currency]').change(function () {
+            if (this.value == 'btc') {
+                $("#coinTextDiv").show();
+                $("#tryTextDiv").hide();
+                $("#usdTextDiv").hide();
+            }
+            else if (this.value == 'try') {
+                $("#coinTextDiv").hide();
+                $("#tryTextDiv").show();
+                $("#usdTextDiv").hide();
+            }
+            else {
+                $("#coinTextDiv").hide();
+                $("#tryTextDiv").hide();
+                $("#usdTextDiv").show();
+            }
+        });
+
+        $("#btnCalc").click(function () {
+            var radioVal = $('input[type=radio][name=currency]:checked').val();
+
+            if (radioVal == 'btc') {
+                var x = $("#coinTextBox").val().replace(',', '.');
+                var y = $("#coinMarket").text().replace(',', '.');
+                var z = $("#btcTurk").text().replace(',', '.');
+                console.log("keke" + y);
+                var dolarResult = multiplication(x, y);
+                var tryResult = multiplication(x, z);
+                $("#calcResult").text("Dolar: " + dolarResult + "\n TRY: " + tryResult);
+            }
+            else if (radioVal == 'try') {
+                var x = $("#tryTextBox").val().replace(',', '.');
+                var y = $("#btcTurk").text().replace(',', '.');
+                var btcResult = division(x, y);
+                $("#calcResult").text("BTC: " + btcResult);
+            }
+            else {
+                var x = $("#usdTextBox").val().replace(',', '.');
+                var y = $("#coinMarket").text().replace(',', '.');
+                var btcResult = division(x, y);
+                $("#calcResult").text("BTC: " + btcResult);
+            }
+        });
+
+        function multiplication(x, y) {
+            return x * parseFloat(y);
+        }
+        function division(x, y) {
+            return x / y;
+        }
+
+        function coinMarket() {
+            var obj, dbParam, xmlhttp, myObj, x, txt = "";
+            obj = { "table": "customers", "limit": 20 };
+            dbParam = JSON.stringify(obj);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myObj = JSON.parse(this.responseText);
+                    txt += "<table clas='table table-hover'>"
+                        + "<tr><td>" + "CoinMarketCap: &nbsp;" + "</td>"
+                        + "<td id='coinMarket'>" + myObj[0].price_usd + "</td>"
+                        + "<td>" + "&nbsp; USD" + "</td>"
+                        + "</tr>"
+                        + "</table>";
+                    document.getElementById("CoinMarketCapPrices").innerHTML = txt;
+                }
+            };
+            xmlhttp.open("GET", "https://api.coinmarketcap.com/v1/ticker/bitcoin/", true);
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xmlhttp.send("x=" + dbParam);
+        }
+
+        function btcTurkMarket() {
+            var obj, dbParam, xmlhttp, myObj, x, txt = "";
+            obj = { "table": "customers", "limit": 20 };
+            dbParam = JSON.stringify(obj);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myObj = JSON.parse(this.responseText);
+                    txt += "<table clas='table table-hover'>"
+                        + "<tr><td>" + "BtcTurk: &nbsp;" + "</td> <td id='btcTurk'>" + myObj[0].last + "</td>"
+                        + "<td>&nbsp; TL</td></tr>"
+                        + "</table>";
+                    document.getElementById("BtcTurkMarketPrices").innerHTML = txt;
+                }
+            };
+            xmlhttp.open("GET", "https://www.btcturk.com/api/ticker", true);
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xmlhttp.send("x=" + dbParam);
+        }
+
+        function GetDovizKur() {
+
+            $.ajax({
+                url: 'https://www.doviz.com/api/v1/currencies/all/latest',
+                dataType: 'jsonp',
+                success: function (json) {
+                    // Rates are in `json.rates`
+                    // Base currency (USD) is `json.base`
+                    // UNIX Timestamp when rates were collected is in `json.timestamp`
+                    console.log(json);
+                }
+            });
+        }
+
+
+
+        function paribuMarket() {
+            var obj, dbParam, xmlhttp, myObj, x, txt = "";
+            obj = { "table": "customers", "limit": 20 };
+            dbParam = JSON.stringify(obj);
+            var xhr = createCORSRequest('GET', 'https://www.paribu.com/ticker');
+            xhr.onload = function () {
+                myObj = JSON.parse(xhr.responseText);
+                txt += "<table clas='table table-hover'>"
+                txt += "<tr><td>" + "BtcTurk: &nbsp;" + "</td> <td id='btcTurk'>" + myObj[0].last + "</td><td>&nbsp; TL</td></tr>";
+                txt += "</table>"
+                document.getElementById("ParibuMarketPrices").innerHTML = txt;
+            };
+            xhr.send();
+            //xmlhttp = new XMLHttpRequest();
+            //xmlhttp.onreadystatechange = function () {
+            //    if (this.readyState == 4 && this.status == 200) {
+            //        myObj = JSON.parse(this.responseText);
+            //        txt += "<table clas='table table-hover'>"
+            //        txt += "<tr><td>" + "BtcTurk: &nbsp;" + "</td> <td id='btcTurk'>" + myObj[0].last + "</td><td>&nbsp; TL</td></tr>";
+            //        txt += "</table>"
+            //        document.getElementById("ParibuMarketPrices").innerHTML = txt;
+            //    }
+            //};
+            //xmlhttp.open("GET", "https://www.paribu.com/ticker", true);
+            //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            //xmlhttp.send("x=" + dbParam);
+        }
+
+        // Make the actual CORS request.
+        function makeCorsRequest() {
+            // This is a sample server that supports CORS.
+            var url = 'http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html';
+
+            var xhr = createCORSRequest('GET', url);
+            if (!xhr) {
+                alert('CORS not supported');
+                return;
+            }
+
+            // Response handlers.
+            xhr.onload = function () {
+                var text = xhr.responseText;
+                var title = getTitle(text);
+                alert('Response from CORS request to ' + url + ': ' + title);
+            };
+
+            xhr.onerror = function () {
+                alert('Woops, there was an error making the request.');
+            };
+
+            xhr.send();
+        }
+
+        // Create the XHR object.
+        function createCORSRequest(method, url) {
+            var xhr = new XMLHttpRequest();
+            if ("withCredentials" in xhr) {
+                // XHR for Chrome/Firefox/Opera/Safari.
+                xhr.open(method, url, true);
+            } else if (typeof XDomainRequest != "undefined") {
+                // XDomainRequest for IE.
+                xhr = new XDomainRequest();
+                xhr.open(method, url);
+            } else {
+                // CORS not supported.
+                xhr = null;
+            }
+            return xhr;
+        }
+
+        // Helper method to parse the title tag from the response.
+        function getTitle(text) {
+            return text.match('<title>(.*)?</title>')[1];
+        }
+
+
+
+
+        var myVar = setInterval(coinMarket, 10000);
+        var myVar2 = setInterval(btcTurkMarket, 10000);
+        //var myVar3 = setInterval(paribuMarket, 10000);
+
+    </script>
+
+</body>
+
+</html>
