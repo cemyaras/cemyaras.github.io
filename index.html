@@ -16,11 +16,13 @@
             background-color: black;
             color: green;
             font-family: "Lucida Console";
+            font-size: 20px;
         }
          
         input {
             background-color: lightslategray;
             color: darkgreen;
+            font-size: 20px;
         }
     </style>
 
@@ -69,8 +71,9 @@
             </div>
 
             <br />
+            <p />
             <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <button type="button" id="btnCalc" class="btn-success btn-block">Hesapla</button>
                 </div>
                 <div class="col-sm-9">
@@ -89,7 +92,6 @@
             coinMarket();
             btcTurkMarket();
         });
-
         $('input[type=radio][name=currency]').change(function () {
             if (this.value == 'btc') {
                 $("#coinTextDiv").show();
@@ -107,10 +109,8 @@
                 $("#usdTextDiv").show();
             }
         });
-
         $("#btnCalc").click(function () {
             var radioVal = $('input[type=radio][name=currency]:checked').val();
-
             if (radioVal == 'btc') {
                 var x = $("#coinTextBox").val().replace(',', '.');
                 var y = $("#coinMarket").text().replace(',', '.');
@@ -133,14 +133,12 @@
                 $("#calcResult").text("BTC: " + btcResult);
             }
         });
-
         function multiplication(x, y) {
             return x * parseFloat(y);
         }
         function division(x, y) {
             return x / y;
         }
-
         function coinMarket() {
             var obj, dbParam, xmlhttp, myObj, x, txt = "";
             obj = { "table": "customers", "limit": 20 };
@@ -162,7 +160,6 @@
             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xmlhttp.send("x=" + dbParam);
         }
-
         function btcTurkMarket() {
             var obj, dbParam, xmlhttp, myObj, x, txt = "";
             obj = { "table": "customers", "limit": 20 };
@@ -182,9 +179,7 @@
             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xmlhttp.send("x=" + dbParam);
         }
-
         function GetDovizKur() {
-
             $.ajax({
                 url: 'https://www.doviz.com/api/v1/currencies/all/latest',
                 dataType: 'jsonp',
@@ -196,9 +191,6 @@
                 }
             });
         }
-
-
-
         function paribuMarket() {
             var obj, dbParam, xmlhttp, myObj, x, txt = "";
             obj = { "table": "customers", "limit": 20 };
@@ -226,32 +218,26 @@
             //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             //xmlhttp.send("x=" + dbParam);
         }
-
         // Make the actual CORS request.
         function makeCorsRequest() {
             // This is a sample server that supports CORS.
             var url = 'http://html5rocks-cors.s3-website-us-east-1.amazonaws.com/index.html';
-
             var xhr = createCORSRequest('GET', url);
             if (!xhr) {
                 alert('CORS not supported');
                 return;
             }
-
             // Response handlers.
             xhr.onload = function () {
                 var text = xhr.responseText;
                 var title = getTitle(text);
                 alert('Response from CORS request to ' + url + ': ' + title);
             };
-
             xhr.onerror = function () {
                 alert('Woops, there was an error making the request.');
             };
-
             xhr.send();
         }
-
         // Create the XHR object.
         function createCORSRequest(method, url) {
             var xhr = new XMLHttpRequest();
@@ -268,19 +254,13 @@
             }
             return xhr;
         }
-
         // Helper method to parse the title tag from the response.
         function getTitle(text) {
             return text.match('<title>(.*)?</title>')[1];
         }
-
-
-
-
         var myVar = setInterval(coinMarket, 10000);
         var myVar2 = setInterval(btcTurkMarket, 10000);
         //var myVar3 = setInterval(paribuMarket, 10000);
-
     </script>
 
 </body>
